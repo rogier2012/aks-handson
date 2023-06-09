@@ -4,8 +4,8 @@ Run on Azure-CLI
 
 ## Deploy using Helm
 
-
-
+https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
+gcr.io/google-samples/kubernetes-bootcamp:v1
 
 https://www.getbetterdevops.io/helm-quickstart-tutorial/
 
