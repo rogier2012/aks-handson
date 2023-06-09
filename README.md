@@ -2,6 +2,22 @@
 
 Run on Azure-CLI
 
+## Connecting 
+
+
+`az account set --subscription <subscription id>`
+
+`az aks get-credentials --resource-group <aks-rg> --name <aks-name>`
+
+`kubelogin convert-kubeconfig -l azurecli`
+
+`kubectl get deployments`
+
+## Create your own namespace
+
+``
+
+
 ## Deploy using Helm
 
 https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
