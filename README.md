@@ -38,6 +38,18 @@ Set the default namespace in your context to avoid typing `--namespace <your-nam
 
 `kubectl config set-context --current --namespace=<your-namespace>`
 
+## Register container in ACR
+
+Define a name for your image e.g. `rogier-voting`
+
+`git clone https://github.com/Azure-Samples/azure-voting-app-redis.git`
+
+`cd azure-voting-app-redis/azure-vote/`
+
+
+` az acr build --image rogier-voting:v1 --registry bngworkshopacr --file Dockerfile .`
+
+After this command, find your image in https://portal.azure.com/#@bngbank.onmicrosoft.com/resource/subscriptions/1771ed3d-7e62-4569-a0ea-bbb0880b4d0b/resourcegroups/Workshop-Cloudchapter-rg/providers/Microsoft.ContainerRegistry/registries/bngworkshopacr/repository
 
 ## Creating a Helm project
 We are now going to use Helm to deploy something in our namespace. We are following the tutorial from Azure: https://learn.microsoft.com/en-us/azure/aks/quickstart-helm?tabs=azure-cli
@@ -54,11 +66,11 @@ Update the dependencies of your Helm project using
 `helm dependency update <your-project-name>`
   
 Update `<your-project-name>/values.yaml` with the following changes:
-- Add a redis section to set the image details, container port, and deployment name.
-- Add a backendName for connecting the frontend portion to the redis deployment.
-- Change image.repository to `<loginServer>/azure-vote-front.`
-- Change image.tag to v1.
-- Change service.type to LoadBalancer.
+- Add a redis section to set the image details, container port, and deployment name
+- Add a backendName for connecting the frontend portion to the redis deployment
+- Change image.repository to `<container-registry-name>.azurecr.io/rogier-voting`
+- Change image.tag to v1
+- Change service.type to LoadBalancer
  
 Add an env section to `<your-project-name>/templates/deployment.yaml` for passing the name of the redis deployment.
 
