@@ -10,15 +10,31 @@ Run on the Cloud shell, tested in the Bash version.
 
 `kubelogin convert-kubeconfig -l azurecli`
 
+Verify that it works by the following command (or any other kubectl command for that matter)
 `kubectl get deployments`
 
+## View the available nodes
+
+`kubectl get nodes`
+
+**How much memory does the `agentpool` node have?**
+
+You can view the properties of a Kubernetes object using the following command
+
+`kubectl describe <object-type> <object-name>`
+
 ## Create your own namespace
+We want to deploy something without bothering other cluster users. Therefore we are going to create a namespace. Use the following command to see the current namespaces available
 
 `kubectl get namespaces`
 
-`kubectl create namespace <your namespace>`
+Create a new namespace:
 
-`kubectl config set-context --current --namespace=my-namespace`
+`kubectl create namespace <your-namespace>`
+
+Set the default namespace in your context to avoid typing `--namespace <your-namespace>` everytime.
+
+`kubectl config set-context --current --namespace=<your-namespace>`
 
 
 ## Deploy using Helm
