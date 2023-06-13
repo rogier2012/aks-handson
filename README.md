@@ -1,9 +1,8 @@
 # aks-handson
 
-Run on Azure-CLI
+Run on the Cloud shell, tested in the Bash version.
 
 ## Connecting 
-
 
 `az account set --subscription <subscription id>`
 
@@ -15,7 +14,11 @@ Run on Azure-CLI
 
 ## Create your own namespace
 
-``
+`kubectl get namespaces`
+
+`kubectl create namespace <your namespace>`
+
+`kubectl config set-context --current --namespace=my-namespace`
 
 
 ## Deploy using Helm
