@@ -2,7 +2,7 @@
 
 
 
-Run on the Cloud shell, tested in the Bash version.
+Run on the Cloud shell, tested in the Bash version. Read the instruction carefully. anything within `<>` you have to fill in yourself.
 
 ## Connecting 
 
@@ -40,16 +40,17 @@ Set the default namespace in your context to avoid typing `--namespace <your-nam
 
 ## Register container in ACR
 
-Define a name for your image e.g. `rogier-voting`
+Define a name for your image e.g. `rogier-voting` and choose a version number e.g. `v1`
 
 `git clone https://github.com/Azure-Samples/azure-voting-app-redis.git`
 
 `cd azure-voting-app-redis/azure-vote/`
 
+Now build and register the app in the Azure Container Registry(ACR). You can find the container registry in the same resource group as the kubernetes cluster
 
-` az acr build --image rogier-voting:v1 --registry bngworkshopacr --file Dockerfile .`
+` az acr build --image <image-name>:<version-number> --registry <registry-name> --file Dockerfile .`
 
-After this command, find your image in https://portal.azure.com/#@bngbank.onmicrosoft.com/resource/subscriptions/1771ed3d-7e62-4569-a0ea-bbb0880b4d0b/resourcegroups/Workshop-Cloudchapter-rg/providers/Microsoft.ContainerRegistry/registries/bngworkshopacr/repository
+After this command, find your image in the Repository section of the ACR
 
 ## Creating a Helm project
 We are now going to use Helm to deploy something in our namespace. We are following the tutorial from Azure: https://learn.microsoft.com/en-us/azure/aks/quickstart-helm?tabs=azure-cli
@@ -69,8 +70,8 @@ Update the dependencies of your Helm project using
 Update `<your-project-name>/values.yaml` with the following changes:
 - Add a redis section to set the image details, container port, and deployment name
 - Add a backendName for connecting the frontend portion to the redis deployment
-- Change image.repository to `<container-registry-name>.azurecr.io/rogier-voting`
-- Change image.tag to v1
+- Change image.repository to `<container-registry-name>.azurecr.io/<image-name>`
+- Change image.tag to <version-number> from above
 - Change service.type to LoadBalancer
  
 Add an env section to `<your-project-name>/templates/deployment.yaml` for passing the name of the redis deployment.
@@ -91,8 +92,58 @@ containers:
 
 It takes a few minutes for the service to return a public IP address. Monitor progress using the `kubectl get service command` with the --watch argument.
 
-This reveals the external IP from which you can check out 
+This reveals the external IP from which you can check out the app.
+
+## Updating the app
+
+Now we want to personalize the app by editing the button text (or more if you like).
+
+Update the config file:
   
+`cd azure-voting-app-redis/azure-vote`
+`code azure-vote/config_file.cfg`
+  
+ Change the vote1value and vote2value to your liking and save.
+  
+
+  
+ Update the app by creating a new version :
+ 
+ ` az acr build --image <image-name>:<new-version-number> --registry <registry-name> --file Dockerfile .`
+  
+ Update your helm by changing the following:
+  - Update the `appVersion` to a higher number in the `Chart.yaml`
+  - Update the tag of image to your new version number in `values.yaml`
+  
+  
+  
+## Scaling
+Now we are going to manually scale our front-end via `kubectl`. Note that you can also do this by editing the `replicaCount` in the `values.yaml`
+
+`kubectl get deployments`
+
+
+`kubectl get rs`
+
+`kubectl scale deployments/<your-project-name> --replicas=4`
+
+`kubectl get deployments`
+
+`kubectl get pods -o wide`
+
+`kubectl describe deployments/<your-project-name>`
+
+## Clean up
+  
+Always cleanup after yourselves. To do this, execute the following command 
+  
+`helm delete <your-project-name>`
+  
+  
+## More tutorials 
+  
+  
+ 
 For more exercises, check out:
 https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
 gcr.io/google-samples/kubernetes-bootcamp:v1
@@ -100,46 +151,6 @@ gcr.io/google-samples/kubernetes-bootcamp:v1
 https://www.getbetterdevops.io/helm-quickstart-tutorial/
 
 
-## Exploring the cluster
-
-https://kubernetes.io/docs/tutorials/kubernetes-basics/explore/explore-intro/
-
-`kubectl get pods`
-
-`kubectl describe pods`
-
-### Proxy
-`kubectl proxy`
-
-`export POD_NAME="$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')"
-echo Name of the Pod: $POD_NAME`
 
 
-`curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/`
 
-### Logs
-
-`kubectl exec "$POD_NAME" -- env`
-
-`kubectl exec -ti $POD_NAME -- bash`
-
-`cat server.js`
-
-`curl http://localhost:8080`
-
-## Scaling
-https://kubernetes.io/docs/tutorials/kubernetes-basics/scale/scale-intro/
-
-`kubectl get deployments`
-
-
-`kubectl get rs`
-
-`kubectl scale deployments/kubernetes-bootcamp --replicas=4`
-
-`kubectl get deployments`
-
-
-`kubectl get pods -o wide`
-
-`kubectl describe deployments/kubernetes-bootcamp`
