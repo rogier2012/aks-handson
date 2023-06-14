@@ -120,8 +120,9 @@ Update the config file:
 ## Scaling
 Now we are going to manually scale our front-end via `kubectl`. Note that you can also do this by editing the `replicaCount` in the `values.yaml`
 
+  Follow the steps below:
+  
 `kubectl get deployments`
-
 
 `kubectl get rs`
 
