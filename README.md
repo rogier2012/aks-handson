@@ -53,6 +53,7 @@ After this command, find your image in https://portal.azure.com/#@bngbank.onmicr
 
 ## Creating a Helm project
 We are now going to use Helm to deploy something in our namespace. We are following the tutorial from Azure: https://learn.microsoft.com/en-us/azure/aks/quickstart-helm?tabs=azure-cli
+
 Start by creating a new helm project
 
 `helm create <your-project-name>`
@@ -74,11 +75,23 @@ Update `<your-project-name>/values.yaml` with the following changes:
  
 Add an env section to `<your-project-name>/templates/deployment.yaml` for passing the name of the redis deployment.
 
+```
+containers:
+        ...
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: REDIS
+            value: {{ .Values.backendName }}
+        ...
+```
+
 ## Deploy the helm project
 
 `helm install <your-project-name> <your-project-name>/`
 
-It takes a few minutes for the service to return a public IP address. Monitor progress using the kubectl get service command with the --watch argument.
+It takes a few minutes for the service to return a public IP address. Monitor progress using the `kubectl get service command` with the --watch argument.
+
+This reveals the external IP from which you can check out 
   
 For more exercises, check out:
 https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
