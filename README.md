@@ -115,7 +115,9 @@ Update the config file:
   - Update the `appVersion` to a higher number in the `Chart.yaml`
   - Update the tag of image to your new version number in `values.yaml`
   
-  
+Use the helm upgrade command to upgrade your app to the newest version  
+
+  `helm upgrade <your-project-name> <your-project-name>/`
   
 ## Scaling
 Now we are going to manually scale our front-end via `kubectl`. Note that you can also do this by editing the `replicaCount` in the `values.yaml`
